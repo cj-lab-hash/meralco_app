@@ -4,31 +4,19 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // If you ever switch to Render's external DB URL that enforces SSL, enable:
-  // ssl: { rejectUnauthorized: false },
+  // Your DB requires TLS; enable it explicitly
+  ssl: { rejectUnauthorized: false },
+  // Set the schema for every session without issuing a separate query
+  options: '-c search_path=meralco_app,public'
 });
 
-// Always target this app's schema
-pool.on('connect', async (client) => {
-  await client.query('SET search_path TO meralco_app, public');
-});
-
-// Minimal shim so existing code using db.run/db.all continues to work
+// Minimal shim to keep existing code working
 const db = {
-  // General query (promise style)
   query: (text, params) => pool.query(text, params),
-
-  // db.all(sql, callback) -> returns rows[]
   all: (text, cb) =>
-    pool.query(text)
-      .then((res) => cb && cb(null, res.rows))
-      .catch((err) => cb && cb(err)),
-
-  // db.run(sql, params, callback) -> for inserts/updates/deletes
+    pool.query(text).then(r => cb && cb(null, r.rows)).catch(e => cb && cb(e)),
   run: (text, params, cb) =>
-    pool.query(text, params)
-      .then((res) => cb && cb(null, res))
-      .catch((err) => cb && cb(err)),
+    pool.query(text, params).then(r => cb && cb(null, r)).catch(e => cb && cb(e)),
 };
 
 module.exports = db;
