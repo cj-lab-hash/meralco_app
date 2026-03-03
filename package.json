@@ -1,0 +1,21 @@
+{
+  "name": "meralco-billing",
+  "version": "1.0.0",
+  "description": "Electric billing system (PostgreSQL on Render)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "dotenv": "^16.6.1",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "pg": "^8.19.0",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
