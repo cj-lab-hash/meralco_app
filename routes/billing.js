@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
 
     rows.forEach((record) => {
       record.formattedActualBill = formatPeso(record.actual_bill);
+      record.formattedRate       =  formatPeso(record.rate);
       record.formattedGenBill    = formatPeso(record.gen_bill);
       record.formattedJmBill     = formatPeso(record.jm_bill);
     });
