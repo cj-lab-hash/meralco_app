@@ -4,6 +4,12 @@
   <title>Meralco Billing System</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+table {
+  white-space: nowrap;
+  table-layout: auto;
+}
+</style>
 </head>
 
 <body>
@@ -58,8 +64,10 @@
   <hr>
 
   <h3>Latest Billing Record</h3>
-  <div class="container-fluid mt-5">
-    <table class="table table-bordered">
+<!--  <div class="container-fluid mt-5"> -->
+    <div class="table-responsive-lg">
+<!--  <table class="table table-bordered"> -->
+    <table class="table table-bordered table-hover table-sm align-middle">
       <thead>
         <tr>
           <th>Date of Meter Reading</th>
@@ -104,8 +112,10 @@
   </button>
 
   <div class="collapse" id="allRecords">
-    <div class="table-responsive">
-      <table class="table table-bordered">
+    <!-- <div class="container-fluid mt-5"> -->
+      <div class="table-responsive-lg">
+   <!-- <table class="table table-bordered"> -->
+      <table class="table table-bordered table-hover table-sm align-middle">
         <thead>
         <tr>
           <th>Date of Meter Reading</th>
