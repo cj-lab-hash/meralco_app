@@ -154,19 +154,19 @@
       </table>
     </div>
   </div>
-
-</div>
-<button class="btn btn-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#chartsSection">
+    <button class="btn btn-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#chartsSection">
   Show Consumption Graphs
-</button>
+    </button>
 
-<div class="collapse" id="chartsSection">
-  <h3>Consumption Trends</h3>
-  <canvas id="consumptionChart" height="100"></canvas>
+    <div class="collapse" id="chartsSection">
+    <h3>Consumption Trends</h3>
+    <canvas id="consumptionChart" height="80"></canvas>
 
-  <h3 class="mt-4">Ate Gen vs JM Bill</h3>
-  <canvas id="billChart" height="100"></canvas>
+    <h3 class="mt-4">Ate Gen vs JM Bill</h3>
+    <canvas id="billChart" height="80"></canvas>
+    </div>
 </div>
+
 <script>
 function confirmDelete() {
   return confirm("Are you sure you want to delete this record?");
