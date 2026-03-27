@@ -15,24 +15,6 @@ app.use(express.static('public'));
 // Parse forms
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/delete/:id", (req, res) => {
-  const PASSWORD = "112924";   // change to your desired password
-  const enteredPass = req.body.password;
-  
-  if (enteredPass !== PASSWORD) {
-    return res.send("<h3>Wrong password. <a href='/'>Go Back</a></h3>");
-  }
-
-  const id = req.params.id;
-
-  db.run("DELETE FROM billing WHERE id = ?", id, (err) => {
-    if (err) {
-      return res.send("Error deleting record.");
-    }
-    res.redirect("/");
-  });
-});
-
 // Routes
 app.use('/', billingRoutes);
 
