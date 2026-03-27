@@ -27,7 +27,8 @@
 
     <div class="mb-3">
       <label>Previous Meter Consumption (kWh)</label>
-      <input type="number" step="0.01" name="previous_consumption" class="form-control" required>
+    <!--  <input type="number" step="0.01" name="previous_consumption" class="form-control" required> -->
+      <input type="number" step="0.01" name="previous_consumption" class="form-control" value="<%= lastCurrent %>" required>
     </div>
 
     <div class="mb-3">
@@ -42,7 +43,8 @@
 
     <div class="mb-3">
       <label>Ate Gen Previous Sub Meter Reading (kWh)</label>
-      <input type="number" step="0.01" name="gen_previous" class="form-control" required>
+    <!--  <input type="number" step="0.01" name="gen_previous" class="form-control" required> -->
+    <input type="number" step="0.01" name="gen_previous" class="form-control" value="<%= lastGenCurrent %>" required>
     </div>
 
     <div class="mb-3">
