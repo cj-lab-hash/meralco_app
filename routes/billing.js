@@ -26,7 +26,12 @@ router.get('/', async (req, res) => {
 
     const latest = rows[0] || null;
 
-    res.render("index", { record: latest, records: rows });
+    res.render("index", { 
+    record: latest,
+    records: rows,
+    lastCurrent: latest ? latest.current_reading : "",
+    lastGenCurrent: latest ? latest.gen_current : ""
+    });
 
   } catch (err) {
     console.error("SELECT error:", err.message);
