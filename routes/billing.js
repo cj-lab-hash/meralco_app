@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
       record.formattedRate = formatPeso(record.rate);
       record.formattedGenBill = formatPeso(record.gen_bill);
       record.formattedJmBill = formatPeso(record.jm_bill);
-      record.jmconsumption = record.total_consumption - record.gen_consumption;
+      record.jm_consumption = record.total_consumption - record.gen_consumption;
     });
 
     const latest = rows[0] || null;
