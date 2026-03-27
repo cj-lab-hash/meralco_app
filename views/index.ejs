@@ -118,23 +118,33 @@
         </tr>
         </thead>
 
-        <tbody>
-        <% records.forEach(r => { %>
-          <tr>
-            <td><%= r.date %></td>
-            <td><%= r.formattedActualBill %></td>
-            <td><%= r.total_consumption %></td>
-            <td><%= r.formattedRate %></td>
-            <td><%= r.current_reading %></td>
-            <td><%= r.previous_reading %></td>
-            <td><%= r.gen_previous %></td>
-            <td><%= r.gen_current %></td>
-            <td><%= r.gen_consumption %></td>
-            <td><%= r.formattedGenBill %></td>
-            <td><%= r.formattedJmBill %></td>
-          </tr>
-        <% }) %>
-        </tbody>
+        
+<tbody>
+<% records.forEach(r => { %>
+  <tr>
+    <td><%= r.date %></td>
+    <td><%= r.formattedActualBill %></td>
+    <td><%= r.total_consumption %></td>
+    <td><%= r.formattedRate %></td>
+    <td><%= r.current_reading %></td>
+    <td><%= r.previous_reading %></td>
+    <td><%= r.gen_previous %></td>
+    <td><%= r.gen_current %></td>
+    <td><%= r.gen_consumption %></td>
+    <td><%= r.formattedGenBill %></td>
+    <td><%= r.formattedJmBill %></td>
+
+    <!-- DELETE BUTTON -->
+    <td>
+      <form method="POST" action="/delete/<%= r.id %>" onsubmit="return confirmDelete()">
+        <input type="password" name="password" class="form-control mb-1" placeholder="Enter password" required>
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+      </form>
+    </td>
+  </tr>
+<% }) %>
+</tbody>
+
       </table>
     </div>
   </div>
