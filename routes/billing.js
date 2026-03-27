@@ -1,14 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db/database');
+const db = require('../db/database');   // <-- This must be a pg.Pool instance
 
-// Home (list + latest)
+// -------------------------------
+// GET HOME — List all + Latest
+// -------------------------------
 router.get('/', (req, res) => {
-  db.all('SELECT *, id FROM records ORDER BY "date" DESC', (err, rows) => {
+  const sql = `SELECT * FROM records ORDER BY "date" DESC`;
+
+  db.query(sql, (err, result) => {
     if (err) {
-      console.error('Fetch error:', err.message);
-      return res.status(500).send('Database error');
+      console.error("SELECT error:", err.message);
+      return res.status(500).send("Database error");
     }
+
+    const rows = result.rows;
 
     const formatPeso = (amount) =>
       '₱' + parseFloat(amount || 0).toLocaleString('en-PH', {
@@ -23,12 +29,16 @@ router.get('/', (req, res) => {
       record.formattedJmBill = formatPeso(record.jm_bill);
     });
 
-    const latest = rows[0];
-    res.render('index', { record: latest, records: rows });
+    const latest = rows[0] || null;
+
+    res.render("index", { record: latest, records: rows });
   });
 });
 
-// Create record
+
+// -------------------------------
+// POST — Add a New Billing Record
+// -------------------------------
 router.post('/', (req, res) => {
   const {
     actual_bill,
@@ -54,9 +64,10 @@ router.post('/', (req, res) => {
   const genBillComputed = parseFloat((genConsumption * rate).toFixed(2));
   const jmBill = parseFloat((generalCons * rate).toFixed(2));
 
-  const additionalCharges = (actualBill - (jmBill + genBillComputed)) / 2;
-  const jmBillWithCharges = parseFloat((jmBill + additionalCharges).toFixed(2));
-  const genBillWithCharges = parseFloat((genBillComputed + additionalCharges).toFixed(2));
+  const extra = (actualBill - (jmBill + genBillComputed)) / 2;
+
+  const jmBillWithCharges = parseFloat((jmBill + extra).toFixed(2));
+  const genBillWithCharges = parseFloat((genBillComputed + extra).toFixed(2));
 
   const sql = `
     INSERT INTO records (
@@ -72,6 +83,7 @@ router.post('/', (req, res) => {
       jm_bill,
       "date"
     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+    RETURNING id
   `;
 
   const params = [
@@ -88,32 +100,35 @@ router.post('/', (req, res) => {
     billing_date,
   ];
 
-  db.run(sql, params, (err) => {
+  db.query(sql, params, (err) => {
     if (err) {
-      console.error('Insert error:', err.message);
-      return res.status(500).send('Insert error');
+      console.error("INSERT error:", err.message);
+      return res.status(500).send("Insert error");
     }
-    res.redirect('/');
+    res.redirect("/");
   });
 });
 
-// DELETE with password
-router.post("/delete/:id", (req, res) => {
-  const PASSWORD = "112924";
-  const enteredPass = req.body.password;
 
-  if (enteredPass !== PASSWORD) {
-    return res.send("<h3>Wrong password. <a href='/'>Go Back</a></h3>");
+// -------------------------------
+// DELETE — With Password Security
+// -------------------------------
+router.post("/delete/:id", (req, res) => {
+  const PASSWORD = "112924";  // Change anytime
+  const entered = req.body.password;
+
+  if (entered !== PASSWORD) {
+    return res.send("<h3>Wrong password. /Go Back</a></h3>");
   }
 
   const id = req.params.id;
 
   const sql = `DELETE FROM records WHERE id = $1`;
 
-  db.run(sql, [id], (err) => {
+  db.query(sql, [id], (err) => {
     if (err) {
-      console.error("Delete error:", err.message);
-      return res.send("Error deleting record.");
+      console.error("DELETE ERROR:", err.message);
+      return res.send("Error deleting record: " + err.message);
     }
     res.redirect("/");
   });
