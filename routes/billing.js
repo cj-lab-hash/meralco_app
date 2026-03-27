@@ -137,5 +137,17 @@ router.post("/delete/:id", async (req, res) => {
     res.send("Error deleting record: " + err.message);
   }
 });
+// API — Return all records for charts
+router.get("/api/records", async (req, res) => {
+  try {
+    const sql = `SELECT * FROM records ORDER BY "date" ASC`;
+    const result = await db.query(sql);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("API ERROR:", err.message);
+    res.status(500).json({ error: "Could not fetch records" });
+  }
+});
 
 module.exports = router;
