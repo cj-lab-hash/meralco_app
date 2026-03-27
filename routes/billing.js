@@ -113,24 +113,21 @@ router.post('/', (req, res) => {
 // -------------------------------
 // DELETE — With Password Security
 // -------------------------------
-router.post("/delete/:id", (req, res) => {
-  const PASSWORD = "112924";  // Change anytime
-  const entered = req.body.password;
-
-  if (entered !== PASSWORD) {
+router.post("/delete/:id", async (req, res) => {
+  const PASSWORD = "112924";
+  if (req.body.password !== PASSWORD) {
     return res.send("<h3>Wrong password. /Go Back</a></h3>");
   }
 
   const id = req.params.id;
 
-  const sql = `DELETE FROM records WHERE id = $1`;
-
-  db.query(sql, [id], (err) => {
-    if (err) {
-      console.error("DELETE ERROR:", err.message);
-      return res.send("Error deleting record: " + err.message);
-    }
+  try {
+    await db.query("DELETE FROM records WHERE id = $1", [id]);
     res.redirect("/");
+    } catch (err) {
+    console.error("DELETE ERROR:", err.message);
+    res.send("Error deleting record: " + err.message);
+    }
   });
 });
 
