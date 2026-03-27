@@ -71,6 +71,7 @@
           <th>Ate Gen Previous Sub Meter Reading</th>
           <th>Ate Gen Current Sub Meter Reading</th>
           <th>Ate Gen Consumption</th>
+          <th>JM Consumption</th>
           <th>Ate Gen Bill</th>
           <th>JM Bill</th>
         </tr>
@@ -87,6 +88,7 @@
           <td><%= record.gen_previous %></td>
           <td><%= record.gen_current %></td>
           <td><%= record.gen_consumption %></td>
+          <td><%= record.total_consumption - record.gen_consumption %></td>
           <td><%= record.formattedGenBill %></td>
           <td><%= record.formattedJmBill %></td>
         </tr>
@@ -115,6 +117,7 @@
           <th>Ate Gen Sub Meter Previous</th>
           <th>Ate Gen Sub Meter Current</th>
           <th>Ate Gen Current Consumption</th>
+          <th>JM Consumption</th>
           <th>Ate Gen Bill</th>
           <th>JM Bill</th>
         </tr>
@@ -133,6 +136,7 @@
     <td><%= r.gen_previous %></td>
     <td><%= r.gen_current %></td>
     <td><%= r.gen_consumption %></td>
+    <td><%= r.jm_consumption %></td>  
     <td><%= r.formattedGenBill %></td>
     <td><%= r.formattedJmBill %></td>
 
@@ -170,6 +174,8 @@ function confirmDelete() {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!--for the grapshs -->
 <script>
 async function loadCharts() {
   const res = await fetch("/api/records");
@@ -178,8 +184,10 @@ async function loadCharts() {
   const labels = data.map(r => r.date);
   const totalConsumption = data.map(r => r.total_consumption);
   const genConsumption = data.map(r => r.gen_consumption);
+  const jmConsumption = data.map(r => r.total_consumption - r.gen_consumption);
   const jmBill = data.map(r => r.jm_bill);
   const genBill = data.map(r => r.gen_bill);
+  
 
   // Chart 1: Consumption Trends
   new Chart(document.getElementById("consumptionChart"), {
@@ -197,6 +205,12 @@ async function loadCharts() {
           label: "Ate Gen Consumption (kWh)",
           data: genConsumption,
           borderColor: "orange",
+          fill: false
+        }
+        {
+          label: "JM Consumption (kWh)",
+          data: jmConsumption,
+          borderColor: "green",
           fill: false
         }
       ]
@@ -219,6 +233,7 @@ async function loadCharts() {
           data: genBill,
           backgroundColor: "red"
         }
+      
       ]
     }
   });
