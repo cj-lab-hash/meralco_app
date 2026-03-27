@@ -15,6 +15,12 @@ app.use(express.static('public'));
 // Parse forms
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+});
+
 // Routes
 app.use('/', billingRoutes);
 
