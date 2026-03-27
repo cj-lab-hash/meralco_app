@@ -99,7 +99,7 @@ router.post('/', (req, res) => {
 
 // DELETE with password
 router.post("/delete/:id", (req, res) => {
-  const PASSWORD = "1234";
+  const PASSWORD = "112924";
   const enteredPass = req.body.password;
 
   if (enteredPass !== PASSWORD) {
