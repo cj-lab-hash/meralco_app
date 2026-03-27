@@ -1,33 +1,34 @@
-// routes/billing.js
 const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
 
 // Home (list + latest)
 router.get('/', (req, res) => {
-  db.all('SELECT * FROM records ORDER BY "date" DESC', (err, rows) => {
+  db.all('SELECT *, id FROM records ORDER BY "date" DESC', (err, rows) => {
     if (err) {
       console.error('Fetch error:', err.message);
       return res.status(500).send('Database error');
     }
 
-    // Format for display
     const formatPeso = (amount) =>
-      '₱' + parseFloat(amount || 0).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      '₱' + parseFloat(amount || 0).toLocaleString('en-PH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
     rows.forEach((record) => {
       record.formattedActualBill = formatPeso(record.actual_bill);
-      record.formattedRate       =  formatPeso(record.rate);
-      record.formattedGenBill    = formatPeso(record.gen_bill);
-      record.formattedJmBill     = formatPeso(record.jm_bill);
+      record.formattedRate = formatPeso(record.rate);
+      record.formattedGenBill = formatPeso(record.gen_bill);
+      record.formattedJmBill = formatPeso(record.jm_bill);
     });
 
-    const latest = rows[0]; // most recent by "date"
+    const latest = rows[0];
     res.render('index', { record: latest, records: rows });
   });
 });
 
-// Create
+// Create record
 router.post('/', (req, res) => {
   const {
     actual_bill,
@@ -39,26 +40,24 @@ router.post('/', (req, res) => {
     billing_date,
   } = req.body;
 
-  const actualBill     = parseFloat(actual_bill);
-  const current        = parseFloat(current_consumption);
-  const previous       = parseFloat(previous_consumption);
-  const rate           = parseFloat(rate_per_kwh);
-  const genCurrentNum  = parseFloat(gen_current);
+  const actualBill = parseFloat(actual_bill);
+  const current = parseFloat(current_consumption);
+  const previous = parseFloat(previous_consumption);
+  const rate = parseFloat(rate_per_kwh);
+  const genCurrentNum = parseFloat(gen_current);
   const genPreviousNum = parseFloat(gen_previous);
 
-  // Compute fields
-  const consumption      = current - previous;
-  const genConsumption   = parseFloat((genCurrentNum - genPreviousNum).toFixed(2));
-  const generalCons      = consumption - genConsumption;
-  const genBillComputed  = parseFloat((genConsumption * rate).toFixed(2));
-  const jmBill           = parseFloat((generalCons * rate).toFixed(2));
+  const consumption = current - previous;
+  const genConsumption = parseFloat((genCurrentNum - genPreviousNum).toFixed(2));
+  const generalCons = consumption - genConsumption;
 
-  // Split extra charges evenly between gen bill and JM bill
-  const additionalCharges   = (actualBill - (jmBill + genBillComputed)) / 2;
-  const jmBillWithCharges   = parseFloat((jmBill + additionalCharges).toFixed(2));
-  const genBillWithCharges  = parseFloat((genBillComputed + additionalCharges).toFixed(2));
+  const genBillComputed = parseFloat((genConsumption * rate).toFixed(2));
+  const jmBill = parseFloat((generalCons * rate).toFixed(2));
 
-  // Postgres placeholders + quoting "date"
+  const additionalCharges = (actualBill - (jmBill + genBillComputed)) / 2;
+  const jmBillWithCharges = parseFloat((jmBill + additionalCharges).toFixed(2));
+  const genBillWithCharges = parseFloat((genBillComputed + additionalCharges).toFixed(2));
+
   const sql = `
     INSERT INTO records (
       actual_bill,
@@ -86,7 +85,7 @@ router.post('/', (req, res) => {
     genConsumption,
     genBillWithCharges,
     jmBillWithCharges,
-    billing_date, // stored as text in "date"
+    billing_date,
   ];
 
   db.run(sql, params, (err) => {
@@ -97,18 +96,23 @@ router.post('/', (req, res) => {
     res.redirect('/');
   });
 });
-app.post("/delete/:id", (req, res) => {
-  const PASSWORD = "1234";   // change to your desired password
+
+// DELETE with password
+router.post("/delete/:id", (req, res) => {
+  const PASSWORD = "1234";
   const enteredPass = req.body.password;
-  
+
   if (enteredPass !== PASSWORD) {
     return res.send("<h3>Wrong password. <a href='/'>Go Back</a></h3>");
   }
 
   const id = req.params.id;
 
-  db.run("DELETE FROM billing WHERE id = ?", id, (err) => {
+  const sql = `DELETE FROM records WHERE id = $1`;
+
+  db.run(sql, [id], (err) => {
     if (err) {
+      console.error("Delete error:", err.message);
       return res.send("Error deleting record.");
     }
     res.redirect("/");
