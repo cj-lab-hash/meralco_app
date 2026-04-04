@@ -5,9 +5,6 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL, // USE EXTERNAL URL
   ssl: { rejectUnauthorized: false }
 });
-pool.on("connect", (client) => {
-  client.query("SET search_path TO meralco_app, public");
-});
 
 const sql = `
 CREATE SCHEMA IF NOT EXISTS meralco_app;
