@@ -5,11 +5,13 @@ const bodyParser = require('body-parser'); // fine w/ Express 5
 const billingRoutes = require('./routes/billing');
 const db = require('./db/database');
 
-const app = express();
-
 db.query("SHOW search_path;")
   .then(r => console.log("search_path =", r.rows[0].search_path))
   .catch(err => console.error("SHOW search_path failed:", err));
+
+
+const app = express();
+
 
 // Views & static
 app.set('view engine', 'ejs');
