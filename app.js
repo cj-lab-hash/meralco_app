@@ -7,6 +7,10 @@ const db = require('./db/database');
 
 const app = express();
 
+db.query("SHOW search_path;")
+  .then(r => console.log("search_path =", r.rows[0].search_path))
+  .catch(err => console.error("SHOW search_path failed:", err));
+
 // Views & static
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
