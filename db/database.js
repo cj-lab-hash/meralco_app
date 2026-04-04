@@ -1,16 +1,15 @@
-// db/database.js
+
 require('dotenv').config();
 const { Pool } = require('pg');
 
+const isLocal = process.env.DATABASE_URL?.includes('localhost');
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // Your DB requires TLS; enable it explicitly
-  ssl: { rejectUnauthorized: false },
-  // Set the schema for every session without issuing a separate query
-  options: '-c search_path=meralco_app,public'
-});
-pool.on("connect", (client) => {
-  client.query("SET search_path TO meralco_app, public");
+  ssl: isLocal ? false : { rejectUnauthorized: false },
+  options: '-c search_path=meralco_app,public',
+  max: parseInt(process.env.PGPOOL_MAX || '5', 10),
+  idleTimeoutMillis: 10000
 });
 
 // Minimal shim to keep existing code working
