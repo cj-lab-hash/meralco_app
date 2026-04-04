@@ -9,6 +9,9 @@ const pool = new Pool({
   // Set the schema for every session without issuing a separate query
   options: '-c search_path=meralco_app,public'
 });
+pool.on("connect", (client) => {
+  client.query("SET search_path TO meralco_app, public");
+});
 
 // Minimal shim to keep existing code working
 const db = {
