@@ -7,7 +7,7 @@ const db = require('../db/database');
 // -------------------------------
 router.get('/', async (req, res) => {
   try {
-    const sql = `SELECT * FROM records ORDER BY "date" DESC`;
+    const sql = `SELECT * FROM meralco_app.records ORDER BY "date" DESC`;
     const result = await db.query(sql);
     const rows = result.rows;
 
