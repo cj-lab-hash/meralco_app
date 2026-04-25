@@ -201,9 +201,12 @@ if (!Array.isArray(data)) {
   const jmBill = data.map(r => r.jm_bill);
   const genBill = data.map(r => r.gen_bill);
   
+  
+if (window.consumptionChart) window.consumptionChart.destroy();
+    if (window.billChart) window.billChart.destroy();
 
   // Chart 1: Consumption Trends
-  new Chart(document.getElementById("consumptionChart"), {
+ window.consumptionChart = new Chart(document.getElementById("consumptionChart"), {
     type: "line",
     data: {
       labels,
@@ -231,7 +234,7 @@ if (!Array.isArray(data)) {
   });
 
   // Chart 2: Billing Comparison
-  new Chart(document.getElementById("billChart"), {
+  window.billChart = new Chart(document.getElementById("billChart"), {
     type: "bar",
     data: {
       labels,
@@ -250,7 +253,11 @@ if (!Array.isArray(data)) {
       ]
     }
   });
+} catch (err) {
+    console.warn("Chart load failed:", err.message);
+  }
 }
+
 
 loadCharts();
 </script>
