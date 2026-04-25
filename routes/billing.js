@@ -76,7 +76,7 @@ router.post('/', async (req, res) => {
     const genBillWithCharges = parseFloat((genBillComputed + extra).toFixed(2));
 
     const sql = `
-      INSERT INTO records (
+      INSERT INTO meralco_app.records (
         actual_bill,
         total_consumption,
         rate,
@@ -129,7 +129,7 @@ router.post("/delete/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
-    await db.query("DELETE FROM records WHERE id = $1", [id]);
+    await db.query("DELETE FROM meralco_app.records WHERE id = $1", [id]);
 
     res.redirect("/");
 
