@@ -141,7 +141,7 @@ router.post("/delete/:id", async (req, res) => {
 // API — Return all records for charts
 router.get("/api/records", async (req, res) => {
   try {
-    const sql = `SELECT * FROM meralo_app.records ORDER BY "date" ASC`;
+    const sql = `SELECT * FROM meralco_app.records ORDER BY "date" ASC`;
     const result = await db.query(sql);
 
     res.json(result.rows);
