@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser'); // fine w/ Express 5
 const billingRoutes = require('./routes/billing');
 const db = require('./db/database');
-const cors = require('cors');
+
 
 db.query("SHOW search_path;")
   .then(r => console.log("search_path =", r.rows[0].search_path))
@@ -18,7 +18,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
-app.use(cors());
+
 
 // Parse forms
 app.use(bodyParser.urlencoded({ extended: true }));
