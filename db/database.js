@@ -7,7 +7,7 @@ const isLocal = process.env.DATABASE_URL?.includes('localhost');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: isLocal ? false : { rejectUnauthorized: false },
-  options: '-c search_path=meralco_app',
+  options: '-c search_path=meralco_app,public',
   max: parseInt(process.env.PGPOOL_MAX || '5', 10),
   idleTimeoutMillis: 10000
 });
