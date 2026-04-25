@@ -202,11 +202,10 @@ if (!Array.isArray(data)) {
   const genBill = data.map(r => r.gen_bill);
   
   
-if (window.consumptionChart) window.consumptionChart.destroy();
-    if (window.billChart) window.billChart.destroy();
+
 
   // Chart 1: Consumption Trends
- window.consumptionChart = new Chart(document.getElementById("consumptionChart"), {
+ new Chart(document.getElementById("consumptionChart"), {
     type: "line",
     data: {
       labels,
@@ -234,7 +233,7 @@ if (window.consumptionChart) window.consumptionChart.destroy();
   });
 
   // Chart 2: Billing Comparison
-  window.billChart = new Chart(document.getElementById("billChart"), {
+ new Chart(document.getElementById("billChart"), {
     type: "bar",
     data: {
       labels,
