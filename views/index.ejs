@@ -184,7 +184,15 @@ function confirmDelete() {
 <script>
 async function loadCharts() {
   const res = await fetch("/api/records");
-  const data = await res.json();
+  if(!res.ok) {
+console.error("API request failed:", res.status);
+    return;
+  }
+const data = await res.json();
+if (!Array.isArray(data)) {
+    console.error("Expected array from /api/records, got:", data);
+    return;
+  }
 
   const labels = data.map(r => r.date);
   const totalConsumption = data.map(r => r.total_consumption);
